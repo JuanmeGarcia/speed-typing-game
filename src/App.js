@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import './scss/main.scss'
+import React, { useEffect } from 'react'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [text, setText] = React.useState('')
+    const [wordCount, setWordCount] = React.useState(0)
+    const [time, setTime] = React.useState(2)
+
+	function handleOnChange(event) {
+		const { value } = event.target
+		setText(value)
+	}
+
+    function countWords (text){
+        const words = text.trim().split(/\s+/)
+        setWordCount(()=> words[0] === '' ? 0 : words.length)
+    }
+
+    useEffect(() => {
+        countWords(text)
+    }, [text])
+
+    useEffect(()=>{
+        if(time > 0){
+            setTimeout(()=>{
+                setTime(prevtime => prevtime - 1)
+            }, 1000)
+        }
+    }, [time])
+
+	return (
+		<main>
+			<h1>How fast are u able to type?</h1>
+			<textarea
+				name="words"
+				id=""
+				cols="30"
+				rows="10"
+				value={text}
+				onChange={handleOnChange}
+			/>
+			<h4>Time remaining:{time}</h4>
+			<button>Start</button>
+			<h2>Word count:{wordCount}</h2>
+		</main>
+	)
 }
 
-export default App;
+export default App
