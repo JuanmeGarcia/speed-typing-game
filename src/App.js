@@ -2,12 +2,14 @@ import './scss/main.scss'
 import React, { useEffect } from 'react'
 
 function App() {
-	const STARTING_TIME = 5
+	const STARTING_TIME = 2
 
 	const [text, setText] = React.useState('')
 	const [wordCount, setWordCount] = React.useState(0)
 	const [time, setTime] = React.useState(STARTING_TIME)
 	const [hasStarted, setHasStarted] = React.useState(false)
+
+	const textAreaElement = React.useRef(null)
 
 	function handleOnChange(event) {
 		const { value } = event.target
@@ -20,9 +22,11 @@ function App() {
 	}
 
 	function startGame() {
+		setHasStarted(true)
 		setText('')
 		setTime(STARTING_TIME)
-		setHasStarted(true)
+		textAreaElement.current.disabled = false
+		textAreaElement.current.focus()
 	}
 
 	//syncronize the text input with the word count
@@ -53,7 +57,8 @@ function App() {
 				rows="10"
 				value={text}
 				onChange={handleOnChange}
-				disabled={!hasStarted} if u dont want to anyone type meanwhile the time is over
+				// disabled={!hasStarted}// if u dont want to anyone type meanwhile the time is over
+				ref={textAreaElement}
 			/>
 			<h4>Time remaining:{time}</h4>
 			<button disabled={hasStarted} onClick={startGame}>
