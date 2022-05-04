@@ -2,31 +2,46 @@ import './scss/main.scss'
 import React, { useEffect } from 'react'
 
 function App() {
+	const STARTING_TIME = 5
+
 	const [text, setText] = React.useState('')
-    const [wordCount, setWordCount] = React.useState(0)
-    const [time, setTime] = React.useState(2)
+	const [wordCount, setWordCount] = React.useState(0)
+	const [time, setTime] = React.useState(STARTING_TIME)
+	const [hasStarted, setHasStarted] = React.useState(false)
 
 	function handleOnChange(event) {
 		const { value } = event.target
 		setText(value)
 	}
 
-    function countWords (text){
-        const words = text.trim().split(/\s+/)
-        setWordCount(()=> words[0] === '' ? 0 : words.length)
-    }
+	function countWords(text) {
+		const words = text.trim().split(/\s+/)
+		setWordCount(() => (words[0] === '' ? 0 : words.length))
+	}
 
+	function startGame() {
+		setText('')
+		setTime(STARTING_TIME)
+		setHasStarted(true)
+	}
+
+	//syncronize the text input with the word count
+	/* 
     useEffect(() => {
         countWords(text)
-    }, [text])
+    }, [text]) */
 
-    useEffect(()=>{
-        if(time > 0){
-            setTimeout(()=>{
-                setTime(prevtime => prevtime - 1)
-            }, 1000)
-        }
-    }, [time])
+	useEffect(() => {
+		if (time > 0 && hasStarted === true) {
+			setTimeout(() => {
+				setTime(prevtime => prevtime - 1)
+			}, 1000)
+		}
+		if (time === 0) {
+			setHasStarted(false)
+			countWords(text)
+		}
+	}, [time, hasStarted])
 
 	return (
 		<main>
@@ -38,9 +53,12 @@ function App() {
 				rows="10"
 				value={text}
 				onChange={handleOnChange}
+				disabled={!hasStarted} if u dont want to anyone type meanwhile the time is over
 			/>
 			<h4>Time remaining:{time}</h4>
-			<button>Start</button>
+			<button disabled={hasStarted} onClick={startGame}>
+				{time ? 'Start' : 'New game'}
+			</button>
 			<h2>Word count:{wordCount}</h2>
 		</main>
 	)
